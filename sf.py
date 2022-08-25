@@ -1,5 +1,5 @@
+import argparse
 from pathlib import Path
-from typing import List
 
 try:
     import yaml
@@ -12,32 +12,26 @@ except (NameError, ModuleNotFoundError):
     )
 
 
-chars = 2 # characters to play with, ideally 2
+chars = 2  # characters to play with, ideally 2
 words_file = 'words.yaml'
 debug = False
 
 
-def write_words(words) -> None:
+def write_words(w: set[str]) -> None:
+    words = list(w)
+    # words.sort()
     with open(words_file, 'w') as stream:
         yaml.dump(words, stream)
 
 
-def main() -> int:
-    if Path(words_file).is_file():
-        with open(words_file, 'r') as stream:
-            try:
-                word_definitions = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                print(exc)
-    else:
-        print(f"File {words_file} doesn't exist.")
-        return 1
-    words: List[str]
-    words = word_definitions[:]
+def play(words: set[str]) -> int:
+    w: str = ''
     if debug:
         print(words)
+    print(f'uz znam {len(words)} slov :)')
     print('zacni nejakym slovem')
-    played_words: List[str] = []
+    played_words: set[str] = set()
+    # last_word: str = ''
     while True:
         # players's turn
         while True:
@@ -47,32 +41,32 @@ def main() -> int:
             word = input('>> ').lower()
             if word in ['q']:
                 write_words(words)
-                return 0
+                return 1
             if len(word) < 2:
                 print('musis zadat slovo, ktere ma aspon 2 znaky')
             else:
                 if len(played_words) == 0:
-                    played_words.append(word)
+                    played_words.add(word)
+                    # last_word = word
                     break
                 if word in played_words:
                     print('toto slovo uz bylo hadano')
                 else:
-                    if (len(played_words) > 0) and (played_words[-1][-chars:] == word[:chars]):
+                    if (
+                        (len(played_words) > 0) and
+                        (w[-chars:] == word[:chars])
+                    ):
                         break
                     else:
                         print('spatne navazujici slovo')
                         print(f'rikal jsem: {w}')
-                        if word not in words:
-                            words.append(word)
+                        words.add(word)
 
-        if word not in words:
-            words.append(word)
-        else:
-            if word not in played_words:
-                played_words.append(word)
+        words.add(word)
+        played_words.add(word)
 
         # computer's turn
-        remaining_words = set(words) - set(played_words)
+        remaining_words = words - played_words
         if len(remaining_words) > 0:
             if debug:
                 print(f'{remaining_words=}')
@@ -83,7 +77,7 @@ def main() -> int:
                     ok = True
                     break
             if ok:
-                played_words.append(w)
+                played_words.add(w)
                 print(w)
             else:
                 print('Nevim. Vyhrals.')
@@ -93,6 +87,40 @@ def main() -> int:
             print('Neznam zadna dalsi slova. Vyhrals.')
             write_words(words)
             return 0
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'soubor',
+        nargs='?',
+        default='words.yaml',
+        type=str,
+        help='yaml slovnik',
+    )
+    args = parser.parse_args()
+    words_file = args.soubor
+    if Path(words_file).is_file():
+        with open(words_file, 'r') as stream:
+            try:
+                words = set(yaml.safe_load(stream))
+            except yaml.YAMLError as exc:
+                print(exc)
+    else:
+        print(f"File {words_file} doesn't exist.")
+        return 1
+    while True:
+        rc = play(words)
+        if rc == 1:
+            break
+        while True:
+            print('Chces hrat znovu? (y/n)')
+            answer = input('> ')
+            if answer in ('Y', 'y'):
+                break
+            elif answer in ('N', 'n'):
+                return 0
     return 0
 
 
