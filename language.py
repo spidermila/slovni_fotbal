@@ -1,13 +1,11 @@
-import sys
-
-
 class Language:
     def __init__(self, language: str) -> None:
+        allowed_languages = ['cs', 'en']
+        if language not in allowed_languages:
+            raise ValueError(f'Wrong language selected! {allowed_languages=}')
         self.language = language
+
         if language == 'en':
-            self.import_error = 'PyYAML is needed for this game.\n' +\
-                f'Install it: {sys.executable} -m pip install PyYAML'
-            self.pyyaml_needed = 'PyYAML is needed for this game.'
             self.controls = 'controls:'
             self.quit_instruction = '"q" will quit the game'
             self.dunno_instruction = 'if you write "dunno", you ' +\
@@ -21,13 +19,9 @@ class Language:
             self.already_guessed = 'this word was already used. try another.'
             self.wrong_word = 'word not starting according to the rules'
             self.you_won = 'I give up. You won!'
-            self.yaml_dict = 'yaml dictionary file'
             self.play_again = 'Play again? (y/n)'
 
         else:  # default language is cs
-            self.import_error = 'PyYAML je potreba pro tuto hru.\n' +\
-                f'Nainstaluj ho: {sys.executable} -m pip install PyYAML'
-            self.pyyaml_needed = 'PyYAML je potreba pro tuto hru.'
             self.controls = 'ovladani:'
             self.quit_instruction = '"q" ukonci hru a vrati te zpet do konzole'
             self.dunno_instruction = 'kdyz napises "nevim", tak ' +\
@@ -41,7 +35,6 @@ class Language:
             self.already_guessed = 'toto slovo uz bylo hadano. zkus jine.'
             self.wrong_word = 'spatne navazujici slovo'
             self.you_won = 'Nevim. Vyhrals.'
-            self.yaml_dict = 'yaml slovnik'
             self.play_again = 'Chces hrat znovu? (y/n)'
 
     def i_know_words(self, n: int) -> str:

@@ -1,20 +1,18 @@
 import argparse
+import sys
 from pathlib import Path
 
 from language import Language
 
-# cs is the default language
-# other languages: en
-lang = Language('cs')
-
 try:
     import yaml
 except (NameError, ModuleNotFoundError):
-    print(lang.pyyaml_needed)
-    raise ImportError(lang.import_error)
+    raise ImportError(
+        'PyYAML is needed for this game.\n' +
+        f'Install it: {sys.executable} -m pip install PyYAML',
+    )
 
 
-words_file = ''
 chars = 2  # characters to play with, ideally 2
 debug = False
 
@@ -43,7 +41,7 @@ def write_words(w: set[str], words_file: str) -> None:
         yaml.dump(words, stream)
 
 
-def play(words: set[str], words_file: str) -> int:
+def play(words: set[str], words_file: str, lang: Language) -> int:
     w: str = ''
     if debug:
         print(words)
@@ -123,18 +121,29 @@ def play(words: set[str], words_file: str) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'soubor',
+        'file',
         nargs='?',
         default='words.yaml',
         type=str,
-        help=lang.yaml_dict,
+        help='yaml dictionary file. default words.yaml',
+    )
+    parser.add_argument(
+        '-l',
+        default='cs',
+        type=str,
+        help='language: cs or en',
     )
     args = parser.parse_args()
-    words_file = args.soubor
+    words_file = args.file
     words = read_words(words_file)
+    # cs is the default language
+    # other languages: en
+    lang = Language(args.l)
+
+    lang.language
 
     while True:
-        rc = play(words, words_file)
+        rc = play(words, words_file, lang)
         if rc == 1:
             break
         while True:
