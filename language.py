@@ -10,8 +10,10 @@ class Language:
             self.quit_instruction = '"q" will quit the game'
             self.dunno_instruction = 'if you write "dunno", you ' +\
                 'give yo the game and we can play again'
-            self.one_letter_instruction = 'guess words starting ' +\
-                'with the same letter as the last letter of previous word',
+            self.one_letter_instruction = (
+                'guess words starting ' +
+                'with the same letter as the last letter of previous word'
+            )
             self.start_guessing = 'start with some word'
             self.i_won = 'I won! :)'
             self.word_too_short = 'the word must have at least 2 characters'
@@ -26,8 +28,10 @@ class Language:
             self.quit_instruction = '"q" ukonci hru a vrati te zpet do konzole'
             self.dunno_instruction = 'kdyz napises "nevim", tak ' +\
                 'vzdas aktualni hru a muzeme hrat znovu'
-            self.one_letter_instruction = 'hadaji se slova, ktere zacinaji ' +\
-                'na posledni pismeno slova predchoziho',
+            self.one_letter_instruction = (
+                'hadaji se slova, ktere zacinaji ' +
+                'na posledni pismeno slova predchoziho'
+            )
             self.start_guessing = 'zacni nejakym slovem'
             self.i_won = 'vyhral jsem! :)'
             self.word_too_short = 'musis zadat slovo, ktere ma aspon 2 znaky'

@@ -13,7 +13,6 @@ except (NameError, ModuleNotFoundError):
     )
 
 
-chars = 2  # characters to play with, ideally 2
 debug = False
 
 
@@ -41,7 +40,7 @@ def write_words(w: set[str], words_file: str) -> None:
         yaml.dump(words, stream)
 
 
-def play(words: set[str], words_file: str, lang: Language) -> int:
+def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
     w: str = ''
     if debug:
         print(words)
@@ -133,17 +132,23 @@ def main() -> int:
         type=str,
         help='language: cs or en',
     )
+    parser.add_argument(
+        '-c',
+        '--chars',
+        default='2',
+        type=int,
+        help='number of characters to match. default 2',
+    )
     args = parser.parse_args()
     words_file = args.file
     words = read_words(words_file)
-    # cs is the default language
-    # other languages: en
     lang = Language(args.l)
+    chars = args.chars
 
     lang.language
 
     while True:
-        rc = play(words, words_file, lang)
+        rc = play(words, words_file, lang, chars)
         if rc == 1:
             break
         while True:
