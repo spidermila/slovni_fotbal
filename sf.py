@@ -12,7 +12,7 @@ except (NameError, ModuleNotFoundError):
     )
 
 
-chars = 2  # characters to play with, ideally 2
+chars = 1  # characters to play with, ideally 2
 words_file = 'words.yaml'
 debug = False
 
@@ -42,6 +42,10 @@ def play(words: set[str]) -> int:
             if word in ['q']:
                 write_words(words)
                 return 1
+            if word in ['nevim']:
+                write_words(words)
+                print('vyhral jsem! :)')
+                return 0
             if len(word) < 2:
                 print('musis zadat slovo, ktere ma aspon 2 znaky')
             else:
@@ -107,6 +111,9 @@ def main() -> int:
                 words = set(yaml.safe_load(stream))
             except yaml.YAMLError as exc:
                 print(exc)
+            except TypeError:
+                # file is empty
+                words = set()
     else:
         print(f"File {words_file} doesn't exist.")
         return 1
