@@ -9,6 +9,11 @@ run:
 ```
 python sf.py
 ```
+You can chose how many letters of the previous word have to match the first letters of the next word by the ``-c, --chars`` argument. Default is 2. I recommend using value of 1 for feeding the dictionary or simpler gameplay - for kids. For example:
+```
+python sf.py -c 1
+```
+
 to use the default dictionary file ``words.yaml`` and default language ``cs`` (Czech).
 
 For English, you can run:
