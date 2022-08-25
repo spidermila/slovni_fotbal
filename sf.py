@@ -17,9 +17,26 @@ words_file = 'words.yaml'
 debug = False
 
 
+def read_words(words_file: str) -> set[str]:
+    if Path(words_file).is_file():
+        with open(words_file, 'r') as stream:
+            try:
+                words = set(yaml.safe_load(stream))
+            except yaml.YAMLError as exc:
+                print(exc)
+            except TypeError:
+                # file is empty
+                words = set()
+    else:
+        print(f"File {words_file} doesn't exist.")
+        exit(1)
+    return words
+
+
 def write_words(w: set[str]) -> None:
-    words = list(w)
-    # words.sort()
+    from_file = read_words(words_file)
+    words = list(set(list(w) + list(from_file)))
+    words.sort()
     with open(words_file, 'w') as stream:
         yaml.dump(words, stream)
 
@@ -48,10 +65,11 @@ def play(words: set[str]) -> int:
                 return 0
             if len(word) < 2:
                 print('musis zadat slovo, ktere ma aspon 2 znaky')
+            elif len(word.split()) > 1:
+                print('musis zadat jen jedno slovo. ne vice.')
             else:
                 if len(played_words) == 0:
                     played_words.add(word)
-                    # last_word = word
                     break
                 if word in played_words:
                     print('toto slovo uz bylo hadano')
@@ -105,18 +123,8 @@ def main() -> int:
     )
     args = parser.parse_args()
     words_file = args.soubor
-    if Path(words_file).is_file():
-        with open(words_file, 'r') as stream:
-            try:
-                words = set(yaml.safe_load(stream))
-            except yaml.YAMLError as exc:
-                print(exc)
-            except TypeError:
-                # file is empty
-                words = set()
-    else:
-        print(f"File {words_file} doesn't exist.")
-        return 1
+    words = read_words(words_file)
+
     while True:
         rc = play(words)
         if rc == 1:
