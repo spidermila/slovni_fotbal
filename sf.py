@@ -14,8 +14,8 @@ except (NameError, ModuleNotFoundError):
     raise ImportError(lang.import_error)
 
 
+words_file = ''
 chars = 2  # characters to play with, ideally 2
-words_file = 'words.yaml'
 debug = False
 
 
@@ -35,7 +35,7 @@ def read_words(words_file: str) -> set[str]:
     return words
 
 
-def write_words(w: set[str]) -> None:
+def write_words(w: set[str], words_file: str) -> None:
     from_file = read_words(words_file)
     words = list(set(list(w) + list(from_file)))
     words.sort()
@@ -43,7 +43,7 @@ def write_words(w: set[str]) -> None:
         yaml.dump(words, stream)
 
 
-def play(words: set[str]) -> int:
+def play(words: set[str], words_file: str) -> int:
     w: str = ''
     if debug:
         print(words)
@@ -66,10 +66,10 @@ def play(words: set[str]) -> int:
                 print(f'{played_words=}')
             word = input('>> ').lower()
             if word in ['q']:
-                write_words(words)
+                write_words(words, words_file)
                 return 1
             if word in ['nevim', 'dunno']:
-                write_words(words)
+                write_words(words, words_file)
                 print(lang.i_won)
                 return 0
             if len(word) < 2:
@@ -112,11 +112,11 @@ def play(words: set[str]) -> int:
                 print(w)
             else:
                 print(lang.you_won)
-                write_words(words)
+                write_words(words, words_file)
                 return 0
         else:
             print(lang.you_won)
-            write_words(words)
+            write_words(words, words_file)
             return 0
 
 
@@ -134,7 +134,7 @@ def main() -> int:
     words = read_words(words_file)
 
     while True:
-        rc = play(words)
+        rc = play(words, words_file)
         if rc == 1:
             break
         while True:
