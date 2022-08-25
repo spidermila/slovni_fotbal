@@ -28,8 +28,8 @@ def read_words(words_file: str) -> set[str]:
                 # file is empty
                 words = set()
     else:
-        print(f"File {words_file} doesn't exist.")
-        exit(1)
+        Path(words_file).touch()
+        words = set()
     return words
 
 
@@ -46,6 +46,19 @@ def play(words: set[str]) -> int:
     if debug:
         print(words)
     print(f'uz znam {len(words)} slov :)')
+    print('ovladani:')
+    print('"q" ukonci hru a vrati te zpet do konzole')
+    print('kdyz napises "nevim", tak vzdas aktualni hru a muzeme hrat znovu')
+    if chars == 1:
+        print(
+            'hadaji se slova, ktere zacinaji ' +
+            'na posledni pismeno slova predchoziho',
+        )
+    else:
+        print(
+            'hadaji se slova, ktere zacinaji ' +
+            f'na posledni {chars} pismena slova predchoziho',
+        )
     print('zacni nejakym slovem')
     played_words: set[str] = set()
     # last_word: str = ''
