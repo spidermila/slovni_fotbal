@@ -1,18 +1,20 @@
 import argparse
 from pathlib import Path
 
+from language import Language
+
+# cs is the default language
+# other languages: en
+lang = Language('cs')
+
 try:
     import yaml
 except (NameError, ModuleNotFoundError):
-    import sys
-    print('PyYAML is needed for this game.')
-    raise ImportError(
-        'PyYAML is needed for this game.\n' +
-        f'Install it: {sys.executable} -m pip install PyYAML',
-    )
+    print(lang.pyyaml_needed)
+    raise ImportError(lang.import_error)
 
 
-chars = 1  # characters to play with, ideally 2
+chars = 2  # characters to play with, ideally 2
 words_file = 'words.yaml'
 debug = False
 
@@ -45,21 +47,15 @@ def play(words: set[str]) -> int:
     w: str = ''
     if debug:
         print(words)
-    print(f'uz znam {len(words)} slov :)')
-    print('ovladani:')
-    print('"q" ukonci hru a vrati te zpet do konzole')
-    print('kdyz napises "nevim", tak vzdas aktualni hru a muzeme hrat znovu')
+    print(lang.i_know_words(len(words)))
+    print(lang.controls)
+    print(lang.quit_instruction)
+    print(lang.dunno_instruction)
     if chars == 1:
-        print(
-            'hadaji se slova, ktere zacinaji ' +
-            'na posledni pismeno slova predchoziho',
-        )
+        print(lang.one_letter_instruction)
     else:
-        print(
-            'hadaji se slova, ktere zacinaji ' +
-            f'na posledni {chars} pismena slova predchoziho',
-        )
-    print('zacni nejakym slovem')
+        print(lang.more_letter_instruction(chars))
+    print(lang.start_guessing)
     played_words: set[str] = set()
     # last_word: str = ''
     while True:
@@ -72,20 +68,20 @@ def play(words: set[str]) -> int:
             if word in ['q']:
                 write_words(words)
                 return 1
-            if word in ['nevim']:
+            if word in ['nevim', 'dunno']:
                 write_words(words)
-                print('vyhral jsem! :)')
+                print(lang.i_won)
                 return 0
             if len(word) < 2:
-                print('musis zadat slovo, ktere ma aspon 2 znaky')
+                print(lang.word_too_short)
             elif len(word.split()) > 1:
-                print('musis zadat jen jedno slovo. ne vice.')
+                print(lang.one_word_only)
             else:
                 if len(played_words) == 0:
                     played_words.add(word)
                     break
                 if word in played_words:
-                    print('toto slovo uz bylo hadano')
+                    print(lang.already_guessed)
                 else:
                     if (
                         (len(played_words) > 0) and
@@ -93,8 +89,8 @@ def play(words: set[str]) -> int:
                     ):
                         break
                     else:
-                        print('spatne navazujici slovo')
-                        print(f'rikal jsem: {w}')
+                        print(lang.wrong_word)
+                        print(w)
                         words.add(word)
 
         words.add(word)
@@ -115,14 +111,13 @@ def play(words: set[str]) -> int:
                 played_words.add(w)
                 print(w)
             else:
-                print('Nevim. Vyhrals.')
+                print(lang.you_won)
                 write_words(words)
                 return 0
         else:
-            print('Neznam zadna dalsi slova. Vyhrals.')
+            print(lang.you_won)
             write_words(words)
             return 0
-    return 0
 
 
 def main() -> int:
@@ -132,7 +127,7 @@ def main() -> int:
         nargs='?',
         default='words.yaml',
         type=str,
-        help='yaml slovnik',
+        help=lang.yaml_dict,
     )
     args = parser.parse_args()
     words_file = args.soubor
@@ -143,7 +138,7 @@ def main() -> int:
         if rc == 1:
             break
         while True:
-            print('Chces hrat znovu? (y/n)')
+            print(lang.play_again)
             answer = input('> ')
             if answer in ('Y', 'y'):
                 break
