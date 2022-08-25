@@ -9,7 +9,7 @@ run:
 ```
 python sf.py
 ```
-to use the default dictionary file ``words.yaml`` and default language ``cs`` (Czech). 
+to use the default dictionary file ``words.yaml`` and default language ``cs`` (Czech).
 
 For English, you can run:
 ```
