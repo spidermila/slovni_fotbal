@@ -18,7 +18,7 @@ debug = False
 
 def read_words(words_file: str) -> set[str]:
     if Path(words_file).is_file():
-        with open(words_file, 'r') as stream:
+        with open(words_file) as stream:
             try:
                 words = set(yaml.safe_load(stream))
             except yaml.YAMLError as exc:
