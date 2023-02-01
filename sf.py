@@ -1,50 +1,16 @@
 import argparse
-import sys
-from pathlib import Path
 
 from language import Language
-
-try:
-    import yaml
-except (NameError, ModuleNotFoundError):
-    raise ImportError(
-        'PyYAML is needed for this game.\n' +
-        f'Install it: {sys.executable} -m pip install PyYAML',
-    )
+from words import Words
 
 
 debug = False
 
 
-def read_words(words_file: str) -> set[str]:
-    if Path(words_file).is_file():
-        with open(words_file) as stream:
-            try:
-                words = set(yaml.safe_load(stream))
-            except yaml.YAMLError as exc:
-                print(exc)
-            except TypeError:
-                # file is empty
-                words = set()
-    else:
-        Path(words_file).touch()
-        words = set()
-    return words
-
-
-def write_words(w: set[str], words_file: str) -> None:
-    from_file = read_words(words_file)
-    words = list(set(list(w) + list(from_file)))
-    words.sort()
-    with open(words_file, 'w') as stream:
-        yaml.dump(words, stream)
-
-
-def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
+def play(lang: Language, chars: int) -> int:
+    words = Words()
     w: str = ''
-    if debug:
-        print(words)
-    print(lang.i_know_words(len(words)))
+    print(lang.i_know_words(words.count()))
     print(lang.controls)
     print(lang.quit_instruction)
     print(lang.dunno_instruction)
@@ -54,19 +20,16 @@ def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
         print(lang.more_letter_instruction(chars))
     print(lang.start_guessing)
     played_words: set[str] = set()
-    # last_word: str = ''
     while True:
         # players's turn
         while True:
-            if debug:
-                print(f'{words=}')
-                print(f'{played_words=}')
+            # if debug:
+            #     print(f'{words=}')
+            #     print(f'{played_words=}')
             word = input('>> ').lower()
             if word in ['q']:
-                write_words(words, words_file)
-                return 1
+                return 0
             if word in ['nevim', 'dunno']:
-                write_words(words, words_file)
                 print(lang.i_won)
                 return 0
             if len(word) < 2:
@@ -87,20 +50,16 @@ def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
                         break
                     else:
                         print(lang.wrong_word)
-                        print(w)
-                        words.add(word)
+                        print(word)
+                        words.add_word(word)
 
-        words.add(word)
+        words.add_word(word)
         played_words.add(word)
 
         # computer's turn
-        remaining_words = words - played_words
-        if len(remaining_words) > 0:
-            if debug:
-                print(f'{remaining_words=}')
-                print(f'{word}')
+        if words.count_without_some(played_words) > 0:
             ok = False
-            for w in remaining_words:
+            for w in words.get_words_without_some(played_words):
                 if word[-chars:] == w[:chars]:
                     ok = True
                     break
@@ -109,23 +68,14 @@ def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
                 print(w)
             else:
                 print(lang.you_won)
-                write_words(words, words_file)
                 return 0
         else:
             print(lang.you_won)
-            write_words(words, words_file)
             return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        'file',
-        nargs='?',
-        default='words.yaml',
-        type=str,
-        help='yaml dictionary file. default words.yaml',
-    )
     parser.add_argument(
         '-l',
         default='cs',
@@ -140,15 +90,13 @@ def main() -> int:
         help='number of characters to match. default 2',
     )
     args = parser.parse_args()
-    words_file = args.file
-    words = read_words(words_file)
     lang = Language(args.l)
     chars = args.chars
 
     lang.language
 
     while True:
-        rc = play(words, words_file, lang, chars)
+        rc = play(lang, chars)
         if rc == 1:
             break
         while True:
