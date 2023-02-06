@@ -81,9 +81,13 @@ class DBManager:
 
     def get_user_id_by_name(self, user_name: str) -> int:
         with Session(self.engine) as session:
-            return session.execute(
+            result = session.execute(
                 select(Users).where(Users.user_name == user_name),
-            ).first()[0].user_id
+            ).all()
+            if len(result) == 1:
+                return result[0][0].user_id
+            else:
+                raise AssertionError(f'Expected one user, got more: {result=}')
 
     def add_game(
         self,
