@@ -1,50 +1,19 @@
 import argparse
-import sys
-from pathlib import Path
 
 from language import Language
-
-try:
-    import yaml
-except (NameError, ModuleNotFoundError):
-    raise ImportError(
-        'PyYAML is needed for this game.\n' +
-        f'Install it: {sys.executable} -m pip install PyYAML',
-    )
+from users import Users
+from words import Words
 
 
 debug = False
 
 
-def read_words(words_file: str) -> set[str]:
-    if Path(words_file).is_file():
-        with open(words_file) as stream:
-            try:
-                words = set(yaml.safe_load(stream))
-            except yaml.YAMLError as exc:
-                print(exc)
-            except TypeError:
-                # file is empty
-                words = set()
-    else:
-        Path(words_file).touch()
-        words = set()
-    return words
-
-
-def write_words(w: set[str], words_file: str) -> None:
-    from_file = read_words(words_file)
-    words = list(set(list(w) + list(from_file)))
-    words.sort()
-    with open(words_file, 'w') as stream:
-        yaml.dump(words, stream)
-
-
-def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
+def play(lang: Language, chars: int, users: Users) -> int:
+    user_guessed_count = 0
+    game_guessed_count = 0
+    words = Words()
     w: str = ''
-    if debug:
-        print(words)
-    print(lang.i_know_words(len(words)))
+    print(lang.i_know_words(words.count()))
     print(lang.controls)
     print(lang.quit_instruction)
     print(lang.dunno_instruction)
@@ -54,20 +23,23 @@ def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
         print(lang.more_letter_instruction(chars))
     print(lang.start_guessing)
     played_words: set[str] = set()
-    # last_word: str = ''
     while True:
         # players's turn
         while True:
-            if debug:
-                print(f'{words=}')
-                print(f'{played_words=}')
+            # if debug:
+            #     print(f'{words=}')
+            #     print(f'{played_words=}')
             word = input('>> ').lower()
             if word in ['q']:
-                write_words(words, words_file)
                 return 1
             if word in ['nevim', 'dunno']:
-                write_words(words, words_file)
                 print(lang.i_won)
+                users.add_game(
+                    users.active_user_name,
+                    user_guessed_count,
+                    game_guessed_count,
+                    False,
+                )
                 return 0
             if len(word) < 2:
                 print(lang.word_too_short)
@@ -87,45 +59,46 @@ def play(words: set[str], words_file: str, lang: Language, chars: int) -> int:
                         break
                     else:
                         print(lang.wrong_word)
-                        print(w)
-                        words.add(word)
+                        print(word)
+                        words.add_word(word)
 
-        words.add(word)
+        words.add_word(word)
         played_words.add(word)
+        user_guessed_count += 1
 
         # computer's turn
-        remaining_words = words - played_words
-        if len(remaining_words) > 0:
-            if debug:
-                print(f'{remaining_words=}')
-                print(f'{word}')
+        if words.count_without_some(played_words) > 0:
             ok = False
-            for w in remaining_words:
+            for w in words.get_words_without_some(played_words):
                 if word[-chars:] == w[:chars]:
                     ok = True
                     break
             if ok:
                 played_words.add(w)
+                game_guessed_count += 1
                 print(w)
             else:
                 print(lang.you_won)
-                write_words(words, words_file)
+                users.add_game(
+                    users.active_user_name,
+                    user_guessed_count,
+                    game_guessed_count,
+                    True,
+                )
                 return 0
         else:
             print(lang.you_won)
-            write_words(words, words_file)
+            users.add_game(
+                users.active_user_name,
+                user_guessed_count,
+                game_guessed_count,
+                True,
+            )
             return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        'file',
-        nargs='?',
-        default='words.yaml',
-        type=str,
-        help='yaml dictionary file. default words.yaml',
-    )
     parser.add_argument(
         '-l',
         default='cs',
@@ -140,24 +113,58 @@ def main() -> int:
         help='number of characters to match. default 2',
     )
     args = parser.parse_args()
-    words_file = args.file
-    words = read_words(words_file)
     lang = Language(args.l)
     chars = args.chars
 
     lang.language
 
+    users = Users()
+    user_names = users.get_user_names()
+    if len(user_names) > 0:
+        print(f'{lang.users}: ')
+        for row in lang.user_stats(users.get_all_game_stats()):
+            print(row)
     while True:
-        rc = play(words, words_file, lang, chars)
+        uname = input(f'{lang.your_name}: ')
+        if len(uname) < 3:
+            if uname in ('Q', 'q'):
+                return 0
+            print(lang.name_too_short)
+        else:
+            for existing_uname in user_names:
+                if uname.lower() == existing_uname.lower():
+                    while True:
+                        print(f'{lang.did_you_mean} {existing_uname}? (y/n)')
+                        answer = input('> ')
+                        if answer.lower() == 'y' or answer == '':
+                            uname = existing_uname
+                            break
+                        elif answer.lower() == 'n':
+                            break
+                        else:
+                            print(lang.answer_yn)
+            users.active_user_name = uname
+            users.add_user(users.active_user_name)
+            break
+
+    while True:
+        rc = play(lang, chars, users)
         if rc == 1:
             break
         while True:
             print(lang.play_again)
             answer = input('> ')
             if answer in ('Y', 'y'):
+                if len(user_names) > 0:
+                    print(f'{lang.users}: ')
+                    for row in lang.user_stats(users.get_all_game_stats()):
+                        print(row)
+                    print('-' * 20)
                 break
             elif answer in ('N', 'n'):
                 return 0
+            else:
+                print(lang.answer_yn)
     return 0
 
 
