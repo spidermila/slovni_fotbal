@@ -25,6 +25,7 @@ class Language:
             self.one_word_only = 'enter only one word. not more.'
             self.already_guessed = 'this word was already used. try another.'
             self.wrong_word = 'word not starting according to the rules'
+            self.i_said = 'I said'
             self.you_won = 'I give up. You won!'
             self.play_again = 'Play again? (y/n)'
 
@@ -48,6 +49,7 @@ class Language:
             self.one_word_only = 'Musíš zadat jen jedno slovo, ne více.'
             self.already_guessed = 'Toto slovo už bylo hádáno. Zkus jiné.'
             self.wrong_word = 'Špatně navazujíci slovo!'
+            self.i_said = 'Říkal jsem'
             self.you_won = 'Nevím. Vyhráls.'
             self.play_again = 'Chceš hrát znovu? (y/n)'
 

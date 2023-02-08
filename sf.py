@@ -58,9 +58,8 @@ def play(lang: Language, chars: int, users: Users) -> int:
                     ):
                         break
                     else:
-                        print(lang.wrong_word)
-                        print(word)
-                        words.add_word(word)
+                        print(f'{lang.wrong_word} - {word}')
+                        print(lang.i_said, w)
 
         words.add_word(word)
         played_words.add(word)
