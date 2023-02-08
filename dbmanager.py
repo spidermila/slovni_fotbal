@@ -125,3 +125,36 @@ class DBManager:
                 ).all(),
             )
             return (won_games, lost_games)
+
+    def get_all_game_stats(self) -> dict[str, tuple[int, int]]:
+        result = {}
+        for user_name in self.get_user_names():
+            user_id = self.get_user_id_by_name(user_name)
+            with Session(self.engine) as session:
+                won_games = len(
+                    session.execute(
+                        select(GameLog)
+                        .where(GameLog.user_won.is_(True))
+                        .where(GameLog.user_id == user_id),
+                    ).all(),
+                )
+                lost_games = len(
+                    session.execute(
+                        select(GameLog)
+                        .where(GameLog.user_won.is_(False))
+                        .where(GameLog.user_id == user_id),
+                    ).all(),
+                )
+            result[user_name] = (won_games, lost_games)
+        return result
+
+    def get_user_names(self) -> list[str]:
+        with Session(self.engine) as session:
+            result = session.execute(
+                select(Users),
+            ).all()
+            names = []
+            if len(result) > 0:
+                for row in result:
+                    names.append(row[0].user_name)
+        return names
