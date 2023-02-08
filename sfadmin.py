@@ -1,8 +1,43 @@
 from dbmanager import DBManager
 
 
+def word_menu(dbm: DBManager) -> None:
+    if len(dbm.get_all_words()) == 0:
+        print('No words in the DB.')
+        return
+    while True:
+        words = dbm.get_all_words()
+        indexes = []
+        for i, word in enumerate(words):
+            indexes.append(str(i + 1))
+            print(f'{i + 1}. {word}')
+        print('-' * 20)
+        print(
+            '''\
+            q - back
+            d - delete
+            ''',
+        )
+        cmd = input('> word menu (select command)> ')
+        if cmd in ['Q', 'q', 'B', 'b']:
+            break
+        elif cmd == 'd':
+            while True:
+                word_number = input('Word number to delete: ')
+                if word_number in ['Q', 'q', '']:
+                    return
+                if word_number in indexes:
+                    break
+                else:
+                    print('Pick a word number from the list!')
+
+            word = words[int(word_number) - 1]
+            dbm.delete_word(word)
+
+
 def user_menu(dbm: DBManager) -> None:
     if len(dbm.get_user_names()) == 0:
+        print('No users in the DB.')
         return
     while True:
         unames = dbm.get_user_names()
@@ -10,7 +45,7 @@ def user_menu(dbm: DBManager) -> None:
         for i, uname in enumerate(unames):
             indexes.append(str(i + 1))
             print(f'{i + 1}. {uname}')
-        cmd = input('> user menu > ')
+        cmd = input('> user menu (select user) > ')
         if cmd in ['Q', 'q', 'B', 'b']:
             break
         elif cmd == 'h':
@@ -27,7 +62,7 @@ def user_menu(dbm: DBManager) -> None:
 
 def user_selected(dbm: DBManager, uname: str) -> None:
     while True:
-        cmd = input(f'> user menu > {uname} > ')
+        cmd = input(f'> user menu ({uname}) > ')
         if cmd in ['Q', 'q', 'B', 'b']:
             break
         elif cmd == 'h':
@@ -72,12 +107,14 @@ def main() -> int:
             print(
                 '''\
             u - user menu
+            w - word menu
             q - quit
             ''',
             )
         elif cmd == 'u':
             user_menu(dbm)
-
+        elif cmd == 'w':
+            word_menu(dbm)
         else:
             pass
     return 0

@@ -62,6 +62,14 @@ class DBManager:
                 result.append(word.word_name)
         return result
 
+    def delete_word(self, word_name: str) -> None:
+        with Session(self.engine) as session:
+            word = session.execute(
+                select(Words).where(Words.word_name == word_name),
+            ).scalars().one()
+            session.delete(word)
+            session.commit()
+
 #  ----- User Section -----
 
     def user_in_db(self, user_name: str) -> bool:
