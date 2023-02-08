@@ -49,17 +49,17 @@ class DBManager:
     def get_all_words(self) -> list:
         with Session(self.engine) as session:
             result = []
-            for row in session.execute(select(Words)).all():
-                result.append(row[0].word_name)
+            for word in session.execute(select(Words)).scalars().all():
+                result.append(word.word_name)
         return result
 
     def get_words_without_some(self, some: set[str]) -> list:
         with Session(self.engine) as session:
             result = []
-            for row in session.execute(
+            for word in session.execute(
                 select(Words).where(Words.word_name.notin_(some)),
-            ).all():
-                result.append(row[0].word_name)
+            ).scalars().all():
+                result.append(word.word_name)
         return result
 
 #  ----- User Section -----
@@ -81,41 +81,21 @@ class DBManager:
 
     def get_user_id_by_name(self, user_name: str) -> int:
         with Session(self.engine) as session:
-            result = session.execute(
+            user = session.execute(
                 select(Users).where(Users.user_name == user_name),
-            ).all()
-            if len(result) == 1:
-                return result[0][0].user_id
+            ).scalar()
+            if user:
+                return user.user_id
             else:
-                raise AssertionError(f'Expected one user, got more: {result=}')
-
-    def add_game(
-        self,
-        user_name: str,
-        user_guessed_count: int,
-        game_guessed_count: int,
-        user_won: bool,
-    ) -> None:
-        with Session(self.engine) as session:
-            session.add(
-                GameLog(
-                    user_guessed_count=user_guessed_count,
-                    game_guessed_count=game_guessed_count,
-                    user_won=user_won,
-                    user_id=self.get_user_id_by_name(user_name),
-                ),
-            )
-            session.commit()
+                raise AssertionError(f'User {user_name} not found.')
 
     def get_user_names(self) -> list[str]:
         with Session(self.engine) as session:
-            result = session.execute(
-                select(Users),
-            ).all()
+            users = session.execute(select(Users)).scalars().all()
             names = []
-            if len(result) > 0:
-                for row in result:
-                    names.append(row[0].user_name)
+            if len(users) > 0:
+                for user in users:
+                    names.append(user.user_name)
         return names
 
     def rename_user(self, user_name: str, new_user_name: str) -> None:
@@ -135,6 +115,24 @@ class DBManager:
             session.commit()
 
 #  ----- GameLog Section -----
+
+    def add_game(
+        self,
+        user_name: str,
+        user_guessed_count: int,
+        game_guessed_count: int,
+        user_won: bool,
+    ) -> None:
+        with Session(self.engine) as session:
+            session.add(
+                GameLog(
+                    user_guessed_count=user_guessed_count,
+                    game_guessed_count=game_guessed_count,
+                    user_won=user_won,
+                    user_id=self.get_user_id_by_name(user_name),
+                ),
+            )
+            session.commit()
 
     def get_game_stats_by_user(self, user_name: str) -> tuple[int, int]:
         user_id = self.get_user_id_by_name(user_name)

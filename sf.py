@@ -131,18 +131,21 @@ def main() -> int:
                 return 0
             print(lang.name_too_short)
         else:
-            for existing_uname in user_names:
-                if uname.lower() == existing_uname.lower():
-                    while True:
-                        print(f'{lang.did_you_mean} {existing_uname}? (y/n)')
-                        answer = input('> ')
-                        if answer.lower() == 'y' or answer == '':
-                            uname = existing_uname
-                            break
-                        elif answer.lower() == 'n':
-                            break
-                        else:
-                            print(lang.answer_yn)
+            if uname not in user_names:
+                for existing_uname in user_names:
+                    if uname.lower() == existing_uname.lower():
+                        while True:
+                            print(
+                                f'{lang.did_you_mean} {existing_uname}? (y/n)',
+                            )
+                            answer = input('> ')
+                            if answer.lower() == 'y' or answer == '':
+                                uname = existing_uname
+                                break
+                            elif answer.lower() == 'n':
+                                break
+                            else:
+                                print(lang.answer_yn)
             users.active_user_name = uname
             users.add_user(users.active_user_name)
             break
