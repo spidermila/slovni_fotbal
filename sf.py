@@ -1,4 +1,5 @@
 import argparse
+from random import choice
 
 from language import Language
 from users import Users
@@ -52,14 +53,18 @@ def play(lang: Language, chars: int, users: Users) -> int:
                 if word in played_words:
                     print(lang.already_guessed)
                 else:
-                    if (
-                        (len(played_words) > 0) and
-                        (w[-chars:] == word[:chars])
-                    ):
-                        break
-                    else:
-                        print(f'{lang.wrong_word} - {word}')
-                        print(lang.i_said, w)
+                    if len(played_words) > 0:
+                        if lang.language == 'cs' and 'ch' in w[-chars - 1:]:
+                            if w[-chars - 1:] == word[:chars + 1]:
+                                break
+                        elif 'ch' in word[:chars + 1]:
+                            print(f'{lang.wrong_word} - {word}')
+                            print(lang.i_said, w)
+                        elif w[-chars:] == word[:chars]:
+                            break
+                        else:
+                            print(f'{lang.wrong_word} - {word}')
+                            print(lang.i_said, w)
 
         words.add_word(word)
         played_words.add(word)
@@ -67,12 +72,17 @@ def play(lang: Language, chars: int, users: Users) -> int:
 
         # computer's turn
         if words.count_without_some(played_words) > 0:
-            ok = False
+            valid_answers = []
             for w in words.get_words_without_some(played_words):
-                if word[-chars:] == w[:chars]:
-                    ok = True
-                    break
-            if ok:
+                if lang.language == 'cs' and 'ch' in word[-chars - 1:]:
+                    if word[-chars - 1:] == w[:chars + 1]:
+                        valid_answers.append(w)
+                elif word[-chars:] == w[:chars]:
+                    valid_answers.append(w)
+
+            if len(valid_answers) > 0:
+                w = choice(valid_answers)
+                print(f'{valid_answers=}')
                 played_words.add(w)
                 game_guessed_count += 1
                 print(w)
