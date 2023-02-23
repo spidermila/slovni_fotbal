@@ -9,6 +9,8 @@ from words import Words
 
 debug = False
 
+# TODO: chose from multiple word DBs - maybe one per language?
+
 
 def clear() -> None:
     if sys.platform.find('win') != -1:

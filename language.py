@@ -1,12 +1,36 @@
 class Language:
     def __init__(self, language: str) -> None:
-        allowed_languages = ['cs', 'en']
+        allowed_languages = ('cs', 'en', 'es')
         if language not in allowed_languages:
             raise ValueError(f'Wrong language selected! {allowed_languages=}')
         self.language = language
 
         if language == 'en':
             self.answer_yn = 'Answer "Y/y" for yes or "N/n" for no.'
+            self.users = 'Users'
+            self.your_name = 'Your name'
+            self.name_too_short = 'Name must be longer than 3 characters!'
+            self.did_you_mean = 'Did you mean'
+            self.controls = 'controls:'
+            self.quit_instruction = '"q" will quit the game'
+            self.dunno_instruction = 'if you write "dunno", you ' +\
+                'give yo the game and we can play again'
+            self.one_letter_instruction = (
+                'guess words starting ' +
+                'with the same letter as the last letter of previous word'
+            )
+            self.start_guessing = 'start with some word'
+            self.i_won = 'I won! :)'
+            self.word_too_short = 'the word must have at least 2 characters'
+            self.one_word_only = 'enter only one word. not more.'
+            self.already_guessed = 'this word was already used. try another.'
+            self.wrong_word = 'word not starting according to the rules'
+            self.i_said = 'I said'
+            self.you_won = 'I give up. You won!'
+            self.play_again = 'Play again? (y/n)'
+
+        elif language == 'es':
+            self.answer_yn = 'Responda "Y/y" para sí o "N/n" para no.'
             self.users = 'Users'
             self.your_name = 'Your name'
             self.name_too_short = 'Name must be longer than 3 characters!'
@@ -56,6 +80,8 @@ class Language:
     def i_know_words(self, n: int) -> str:
         if self.language == 'en':
             return f'I know {n} words :)'
+        elif self.language == 'es':
+            return f'Ya se {n} palabras :)'
         else:
             return f'Už znám {n} slov :)'
 
@@ -63,6 +89,9 @@ class Language:
         if self.language == 'en':
             return f'Guess words starting with the same {n} letters ' +\
                 f'as the last {n} letters of the previous word.'
+        elif self.language == 'es':
+            return f'Adivina palabras que comienzan con las mismas {n} ' +\
+                f'letras como las últimas {n} letras de la palabra anterior.'
         else:
             return 'Hádají se slova, které začínají ' +\
                 f'na poslední {n} pismena slova předchozího.'
@@ -83,6 +112,9 @@ class Language:
         if self.language == 'en':
             won_text = 'won'
             lost_text = 'lost'
+        elif self.language == 'es':
+            won_text = 'ganados'
+            lost_text = 'perdidos'
         else:
             won_text = 'výhry'
             lost_text = 'prohry'
