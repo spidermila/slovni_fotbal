@@ -1,12 +1,20 @@
 import argparse
+import os
+import sys
 from random import choice
 
 from language import Language
 from users import Users
 from words import Words
 
-
 debug = False
+
+
+def clear() -> None:
+    if sys.platform.find('win') != -1:
+        os.system('cls')
+    else:
+        os.system('clear')
 
 
 def play(lang: Language, chars: int, users: Users) -> int:
@@ -77,7 +85,7 @@ def play(lang: Language, chars: int, users: Users) -> int:
                 if lang.language == 'cs' and 'ch' in word[-chars - 1:]:
                     if word[-chars - 1:] == w[:chars + 1]:
                         valid_answers.append(w)
-                elif word[-chars:] == w[:chars]:
+                elif word[-chars:] == w[:chars] and 'ch' not in w[:chars + 1]:
                     valid_answers.append(w)
 
             if len(valid_answers) > 0:
@@ -107,6 +115,7 @@ def play(lang: Language, chars: int, users: Users) -> int:
 
 
 def main() -> int:
+    clear()
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-l',
@@ -129,10 +138,15 @@ def main() -> int:
 
     users = Users()
     user_names = users.get_user_names()
+    row_len = 0
     if len(user_names) > 0:
         print(f'{lang.users}: ')
         for row in lang.user_stats(users.get_all_game_stats()):
+            if row_len < len(row):
+                row_len = len(row)
             print(row)
+
+    print('-' * row_len)
     while True:
         uname = input(f'{lang.your_name}: ')
         if len(uname) < 3:
@@ -160,6 +174,7 @@ def main() -> int:
             break
 
     while True:
+        print('-' * row_len)
         rc = play(lang, chars, users)
         if rc == 1:
             break
