@@ -92,7 +92,7 @@ def play(lang: Language, chars: int, users: Users) -> int:
 
             if len(valid_answers) > 0:
                 w = choice(valid_answers)
-                print(f'{valid_answers=}')
+                # print(f'{valid_answers=}')
                 played_words.add(w)
                 game_guessed_count += 1
                 print(w)
