@@ -14,7 +14,7 @@ class Language:
             self.controls = 'controls:'
             self.quit_instruction = '"q" will quit the game'
             self.dunno_instruction = 'if you write "dunno", you ' +\
-                'give yo the game and we can play again'
+                'give up the current game.'
             self.one_letter_instruction = (
                 'guess words starting ' +
                 'with the same letter as the last letter of previous word'
@@ -31,27 +31,29 @@ class Language:
 
         elif language == 'es':
             self.answer_yn = 'Responda "Y/y" para sí o "N/n" para no.'
-            self.users = 'Users'
-            self.your_name = 'Your name'
-            self.name_too_short = 'Name must be longer than 3 characters!'
-            self.did_you_mean = 'Did you mean'
-            self.controls = 'controls:'
-            self.quit_instruction = '"q" will quit the game'
-            self.dunno_instruction = 'if you write "dunno", you ' +\
-                'give yo the game and we can play again'
+            self.users = 'Jugadores'
+            self.your_name = 'Tu nombre'
+            self.name_too_short = 'El nombre tiene debe ser mas largo ' +\
+                'que 3 caracteres!'
+            self.did_you_mean = 'Quisiste decir'
+            self.controls = 'Instrucciones:'
+            self.quit_instruction = '"q" te hará salir del juego'
+            self.dunno_instruction = 'si escribes "no sé", te rindes ' +\
+                'y el juego termina.'
             self.one_letter_instruction = (
-                'guess words starting ' +
-                'with the same letter as the last letter of previous word'
+                'Adivina palabras que comienzan con la misma ' +
+                'letra como la última letra de la palabra anterior.'
             )
-            self.start_guessing = 'start with some word'
-            self.i_won = 'I won! :)'
-            self.word_too_short = 'the word must have at least 2 characters'
-            self.one_word_only = 'enter only one word. not more.'
-            self.already_guessed = 'this word was already used. try another.'
-            self.wrong_word = 'word not starting according to the rules'
-            self.i_said = 'I said'
-            self.you_won = 'I give up. You won!'
-            self.play_again = 'Play again? (y/n)'
+            self.start_guessing = 'comienza escribiendo una palabra'
+            self.i_won = 'Yo gané! :)'
+            self.word_too_short = 'la palabra debe tener al menos 2 caracteres'
+            self.one_word_only = 'escibe una sola palabra. no mas.'
+            self.already_guessed = 'esta palabra ya se usó. intenta con otra.'
+            self.wrong_word = 'la palabra no comienza con la letra, ' +\
+                'de acuerdo a las reglas'
+            self.i_said = 'Dije'
+            self.you_won = 'Me rindo. Tu ganas!'
+            self.play_again = 'Quieres jugar otra vez? (y/n)'
 
         else:  # default language is cs
             self.answer_yn = 'Odpověz "Y/y" pro ano, nebo "N/n" pro ne.'
@@ -81,7 +83,7 @@ class Language:
         if self.language == 'en':
             return f'I know {n} words :)'
         elif self.language == 'es':
-            return f'Ya se {n} palabras :)'
+            return f'Ya sé {n} palabra(s) :)'
         else:
             return f'Už znám {n} slov :)'
 

@@ -43,7 +43,7 @@ def play(lang: Language, chars: int, users: Users) -> int:
             word = input('>> ').lower()
             if word in ['q']:
                 return 1
-            if word in ['nevim', 'dunno']:
+            if word in ['nevim', 'dunno', 'no sé']:
                 print(lang.i_won)
                 users.add_game(
                     users.active_user_name,
