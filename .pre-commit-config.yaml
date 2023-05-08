@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.263
+    rev: v0.0.265
     hooks:
     -   id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -13,7 +13,7 @@ repos:
     -   id: check-yaml
     -   id: debug-statements
     -   id: double-quote-string-fixer
--   repo: https://github.com/asottile/reorder_python_imports
+-   repo: https://github.com/asottile/reorder-python-imports
     rev: v3.9.0
     hooks:
     -   id: reorder-python-imports
@@ -24,7 +24,7 @@ repos:
     -   id: add-trailing-comma
         args: [--py36-plus]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.2
+    rev: v3.4.0
     hooks:
     -   id: pyupgrade
 -   repo: https://github.com/pre-commit/mirrors-mypy
