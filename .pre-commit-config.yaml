@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.276
+    rev: v0.0.277
     hooks:
     -   id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -24,7 +24,7 @@ repos:
     -   id: add-trailing-comma
         args: [--py36-plus]
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.8.0
+    rev: v3.9.0
     hooks:
     -   id: pyupgrade
 -   repo: https://github.com/pre-commit/mirrors-mypy
