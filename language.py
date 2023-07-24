@@ -14,7 +14,7 @@ class Language:
             self.controls = 'controls:'
             self.quit_instruction = '"q" will quit the game'
             self.dunno_instruction = 'if you write "dunno", you ' +\
-                'give up the current game.'
+                'give yo the game and we can play again'
             self.one_letter_instruction = (
                 'guess words starting ' +
                 'with the same letter as the last letter of previous word'
