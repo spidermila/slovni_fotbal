@@ -1,4 +1,4 @@
-from dbmanager import DBManager
+from libs.dbmanager import DBManager
 
 
 def word_menu(dbm: DBManager) -> None:

@@ -13,7 +13,8 @@ class Language:
             self.did_you_mean = 'Did you mean'
             self.controls = 'controls:'
             self.quit_instruction = '"q" will quit the game'
-            self.dunno_instruction = 'if you write "dunno", you ' +\
+            self.dunno = 'dunno'
+            self.dunno_instruction = f'if you write "{self.dunno}", you ' +\
                 'give yo the game and we can play again'
             self.one_letter_instruction = (
                 'guess words starting ' +
@@ -38,8 +39,9 @@ class Language:
             self.did_you_mean = 'Quisiste decir'
             self.controls = 'Instrucciones:'
             self.quit_instruction = '"q" te hará salir del juego'
-            self.dunno_instruction = 'si escribes "no sé", te rindes ' +\
-                'y el juego termina.'
+            self.dunno = 'no sé'
+            self.dunno_instruction = f'si escribes "{self.dunno}", te ' +\
+                'rindes y el juego termina.'
             self.one_letter_instruction = (
                 'Adivina palabras que comienzan con la misma ' +
                 'letra como la última letra de la palabra anterior.'
@@ -63,7 +65,8 @@ class Language:
             self.did_you_mean = 'Měls namysli'
             self.controls = 'ovládání:'
             self.quit_instruction = '"q" ukončí hru'
-            self.dunno_instruction = 'Když napíšeš "nevim", tak ' +\
+            self.dunno = 'nevim'
+            self.dunno_instruction = f'Když napíšeš "{self.dunno}", tak ' +\
                 'vzdáš aktuální hru a můžeme hrát znovu'
             self.one_letter_instruction = (
                 'hádají se slova, které začínají ' +

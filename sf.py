@@ -3,9 +3,9 @@ import os
 import sys
 from random import choice
 
-from language import Language
-from users import Users
-from words import Words
+from libs.language import Language
+from libs.users import Users
+from libs.words import Words
 
 debug = False
 
@@ -43,7 +43,7 @@ def play(lang: Language, chars: int, users: Users) -> int:
             word = input('>> ').lower()
             if word in ['q']:
                 return 1
-            if word in ['nevim', 'dunno', 'no sé']:
+            if word == lang.dunno:
                 print(lang.i_won)
                 users.add_game(
                     users.active_user_name,
