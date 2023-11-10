@@ -1,4 +1,7 @@
 class Language:
+    '''\
+        Language class. Default language is 'cs'
+    '''
     def __init__(self, language: str) -> None:
         allowed_languages = ('cs', 'en', 'es')
         if language not in allowed_languages:
