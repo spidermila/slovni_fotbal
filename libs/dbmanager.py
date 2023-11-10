@@ -2,9 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from db_tables import GameLog
-from db_tables import Users
-from db_tables import Words
+from libs.db_tables import GameLog
+from libs.db_tables import Users
+from libs.db_tables import Words
 # from sqlalchemy.sql import func
 
 

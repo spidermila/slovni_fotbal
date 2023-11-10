@@ -1,4 +1,4 @@
-from dbmanager import DBManager
+from libs.dbmanager import DBManager
 
 
 class Words:
