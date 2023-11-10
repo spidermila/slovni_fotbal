@@ -102,7 +102,7 @@ class Language:
                 f'letras como las últimas {n} letras de la palabra anterior.'
         else:
             return 'Hádají se slova, které začínají ' +\
-                f'na poslední {n} pismena slova předchozího.'
+                f'na poslední {n} písmena slova předchozího.'
 
     def user_stats(self, stat_dict: dict[str, tuple[int, int]]) -> list[str]:
         max_uname = 0
