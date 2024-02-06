@@ -129,3 +129,10 @@ dmypy.json
 .pyre/
 
 .vscode/
+cs_CZ.dic
+czslovnik.yaml
+czslovnik.yaml.zaloha
+kratsi.yaml
+slovni_fotbal.db
+slovni_fotbal.db.backup
+words.yaml
